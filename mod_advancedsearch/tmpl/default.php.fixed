@@ -1,0 +1,82 @@
+<?php
+// No direct access
+defined('_JEXEC') or die;
+
+// Include the template helper
+require_once __DIR__ . '/helper.php';
+
+// Get module parameters
+$limit = $params->get('limit', 10);
+
+// Get search parameters
+$category = JFactory::getApplication()->input->get('category', null, 'INT');
+$tags = JFactory::getApplication()->input->get('tags', array(), 'ARRAY');
+$startDate = JFactory::getApplication()->input->get('start_date');
+$endDate = JFactory::getApplication()->input->get('end_date');
+
+// Get search results
+$results = ModAdvancedSearchHelper::getResults(new JObject(compact('category', 'tags', 'startDate', 'endDate', 'limit')));
+
+// Get total results
+$total = ModAdvancedSearchHelper::getTotalResults(new JObject(compact('category', 'tags', 'startDate', 'endDate')));
+
+// Get pagination
+$pagination = ModAdvancedSearchHelper::getPagination(new JObject(compact('limit')), $total);
+
+// Get search history
+$searchHistory = ModAdvancedSearchHelper::getSearchHistory();
+
+// Get search path
+$searchPath = ModAdvancedSearchHelper::getSearchPath(new JObject(compact('category', 'tags', 'startDate', 'endDate')));
+
+// Get subcategories
+$parentCategory = $category ? $category : 0; // Usar la categoría seleccionada o 0 si no hay selección
+$subcategories = ModAdvancedSearchHelper::getSubcategories($parentCategory);
+$allTags = ModAdvancedSearchHelper::getTags(); // Obtener todas las etiquetas
+?>
+
+<form action="<?php echo JRoute::_('index.php?option=com_content&view=articles'); ?>" method="get">
+    <div class="uk-margin">
+        <label class="uk-form-label" for="category"><?php echo JText::_('MOD_ADVANCEDSEARCH_CATEGORY'); ?></label>
+        <div class="uk-form-controls">
+            <?php echo ModAdvancedSearchTemplateHelper::getSubcategoriesDropdown($subcategories, $category); ?>
+        </div>
+    </div>
+
+    <div class="uk-margin">
+        <label class="uk-form-label" for="tags"><?php echo JText::_('MOD_ADVANCEDSEARCH_TAGS'); ?></label>
+        <div class="uk-form-controls">
+            <?php echo ModAdvancedSearchTemplateHelper::getTagsDropdown($allTags, $tags); ?>
+        </div>
+    </div>
+
+    <div class="uk-margin">
+        <label class="uk-form-label" for="start_date"><?php echo JText::_('MOD_ADVANCEDSEARCH_START_DATE'); ?></label>
+        <div class="uk-form-controls">
+            <input type="date" name="start_date" id="start_date" class="uk-input" value="<?php echo $startDate; ?>">
+        </div>
+    </div>
+
+    <div class="uk-margin">
+        <label class="uk-form-label" for="end_date"><?php echo JText::_('MOD_ADVANCEDSEARCH_END_DATE'); ?></label>
+        <div class="uk-form-controls">
+            <input type="date" name="end_date" id="end_date" class="uk-input" value="<?php echo $endDate; ?>">
+        </div>
+    </div>
+
+    <div class="uk-margin">
+        <button type="submit" class="uk-button uk-button-primary"><?php echo JText::_('MOD_ADVANCEDSEARCH_SEARCH'); ?></button>
+    </div>
+</form>
+
+<?php if ($total > 0): ?>
+    <p><?php echo JText::sprintf('MOD_ADVANCEDSEARCH_RESULTS_FOUND', $total, $searchPath); ?></p>
+
+    <?php echo ModAdvancedSearchTemplateHelper::getResultsTable($results); ?>
+
+    <?php echo ModAdvancedSearchTemplateHelper::getPaginationHtml($pagination); ?>
+<?php endif; ?>
+
+<?php if (!empty($searchHistory)): ?>
+    <?php echo ModAdvancedSearchTemplateHelper::getSearchHistoryHtml($searchHistory); ?>
+<?php endif; ?>
