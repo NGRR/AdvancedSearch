@@ -10,19 +10,22 @@ class ModAdvancedSearchHelper
     // Obtiene las subcategorías basadas en la categoría padre
     public static function getSubcategories($parentCategory)
     {
-        if ($parentCategory == 0){
+        if (!$parentCategory) {
             return array();
         }
+    
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
         $query->select('id, title')
             ->from('#__categories')
-            ->where('parent_id = ' . $db->quote($parentCategory))
+            ->where('parent_id = ' . (int) $parentCategory)
             ->where('extension = "com_content"')
+            ->where('published = 1')
             ->order('title ASC');
-
+    
         $db->setQuery($query);
-        $results = $db->loadObjectList();
+        return $db->loadObjectList();
+    
 
         // Asegurarse de que se devuelva un array incluso si no hay resultados
         return $results ? $results : array();

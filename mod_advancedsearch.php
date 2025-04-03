@@ -14,12 +14,17 @@ $endDate = $params->get('end_date');
 // Get subcategories
 $subcategories = ModAdvancedSearchHelper::getSubcategories($parentCategory);
 
-// Get tags
-$tags = ModAdvancedSearchHelper::getTags();
+// Get selected category from input
+$selectedCategory = JFactory::getApplication()->input->get('category', null, 'INT');
+
+// If no category is selected, default to "All subcategories" of the parent category
+if (!$selectedCategory) {
+    $selectedCategory = $parentCategory;
+}
 
 // Prepare search parameters
 $searchParams = new JObject();
-$searchParams->set('category', JFactory::getApplication()->input->get('category', null, 'INT'));
+$searchParams->set('category', $selectedCategory);
 $searchParams->set('tags', JFactory::getApplication()->input->get('tags', array(), 'ARRAY'));
 $searchParams->set('start_date', $startDate);
 $searchParams->set('end_date', $endDate);
