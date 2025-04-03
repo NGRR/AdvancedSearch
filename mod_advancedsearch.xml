@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" version="3.0" client="site" method="upgrade">
-    <name>mod_advancedsearch</name>
-    <author>Tu Nombre</author>
-    <version>1.0.0</version>
+    <name>Módulo de búsqueda avanzada</name>
+    <author>https://github.com/NGRR</author>
+    <version>1.0.1</version>
     <description>Módulo de búsqueda avanzada de artículos.</description>
     <files>
         <filename module="mod_advancedsearch">mod_advancedsearch.php</filename>

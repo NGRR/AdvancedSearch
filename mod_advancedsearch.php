@@ -2,7 +2,7 @@
 // No direct access
 defined('_JEXEC') or die;
 
-// Include the helper file
+// Include helper file
 require_once __DIR__ . '/helper.php';
 
 // Get module parameters
