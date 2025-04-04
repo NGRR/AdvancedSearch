@@ -6,14 +6,8 @@ defined('_JEXEC') or die;
 require_once __DIR__ . '/helper.php';
 
 // Get module parameters
-$parentCategory = $params->get('parent_category');
-$selectedCategory = JFactory::getApplication()->input->get('category', null, 'INT');
-
-// Get subcategories
-$subcategories = ModAdvancedSearchHelper::getSubcategories($parentCategory);
-
-// Render dropdown for subcategories
-echo ModAdvancedSearchTemplateHelper::getSubcategoriesDropdown($subcategories, $selectedCategory);
+$limit = $params->get('limit', 10);
+$parentCategory = $params->get('parent_category', 0); // Obtener la categoría padre de los parámetros del módulo
 
 // Get search parameters
 $category = JFactory::getApplication()->input->get('category', null, 'INT');
@@ -35,6 +29,9 @@ $searchHistory = ModAdvancedSearchHelper::getSearchHistory();
 
 // Get search path
 $searchPath = ModAdvancedSearchHelper::getSearchPath(new JObject(compact('category', 'tags', 'startDate', 'endDate')));
+
+// Get subcategories - Usar la categoría padre configurada en los parámetros del módulo
+$subcategories = ModAdvancedSearchHelper::getSubcategories($parentCategory);
 
 // Get tags - Si hay una categoría seleccionada, obtener las etiquetas de esa categoría
 if ($category) {
