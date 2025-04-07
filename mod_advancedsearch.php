@@ -26,10 +26,10 @@ $searchParams->set('end_date', $endDate);
 $searchParams->set('limit', $limit);
 
 // Get search results
-$results = ModAdvancedSearchHelper::getResults($searchParams);
+$results = ModAdvancedSearchHelper::getResults($searchParams, $parentCategory); // Pasar $parentCategory
 
 // Get total results
-$total = ModAdvancedSearchHelper::getTotalResults($searchParams);
+$total = ModAdvancedSearchHelper::getTotalResults($searchParams, $parentCategory); // Pasar $parentCategory
 
 // Get pagination
 $pagination = ModAdvancedSearchHelper::getPagination($searchParams, $total);

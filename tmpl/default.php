@@ -16,10 +16,10 @@ $startDate = JFactory::getApplication()->input->get('start_date');
 $endDate = JFactory::getApplication()->input->get('end_date');
 
 // Get search results
-$results = ModAdvancedSearchHelper::getResults(new JObject(compact('category', 'tags', 'startDate', 'endDate', 'limit')));
+$results = ModAdvancedSearchHelper::getResults(new JObject(compact('category', 'tags', 'startDate', 'endDate', 'limit')), $parentCategory); // Pasar $parentCategory
 
 // Get total results
-$total = ModAdvancedSearchHelper::getTotalResults(new JObject(compact('category', 'tags', 'startDate', 'endDate')));
+$total = ModAdvancedSearchHelper::getTotalResults(new JObject(compact('category', 'tags', 'startDate', 'endDate')), $parentCategory); // Pasar $parentCategory
 
 // Get pagination
 $pagination = ModAdvancedSearchHelper::getPagination(new JObject(compact('limit')), $total);
@@ -72,18 +72,18 @@ $dropdownJs = <<<EOD
 function showDropdown(uniqueId) {
     // Cerrar todos los dropdowns abiertos primero
     closeAllDropdowns();
-    
+
     // Mostrar el dropdown seleccionado
     document.getElementById('dropdown_' + uniqueId).style.display = 'block';
-    
+
     // Enfocar el campo de búsqueda
     document.getElementById('filterInput_' + uniqueId).focus();
-    
+
     // Agregar evento para cerrar el dropdown al hacer clic fuera
     document.addEventListener('click', function(event) {
         var dropdown = document.getElementById('dropdown_' + uniqueId);
         var searchBox = document.getElementById('searchBox_' + uniqueId);
-        
+
         if (event.target !== dropdown && event.target !== searchBox && !dropdown.contains(event.target)) {
             dropdown.style.display = 'none';
         }
@@ -105,7 +105,7 @@ function filterFunction(uniqueId) {
     filter = input.value.toUpperCase();
     div = document.getElementById('dropdown_' + uniqueId);
     items = div.getElementsByClassName('dropdown-item');
-    
+
     for (i = 0; i < items.length; i++) {
         txtValue = items[i].textContent || items[i].innerText;
         if (txtValue.toUpperCase().indexOf(filter) > -1) {
@@ -120,7 +120,7 @@ function filterFunction(uniqueId) {
 function selectOption(uniqueId, value, text) {
     // Actualizar el valor del campo de búsqueda
     document.getElementById('searchBox_' + uniqueId).value = text;
-    
+
     // Marcar la opción seleccionada
     var radios = document.getElementsByName('category');
     for (var i = 0; i < radios.length; i++) {
@@ -130,10 +130,10 @@ function selectOption(uniqueId, value, text) {
             radios[i].checked = false;
         }
     }
-    
+
     // Cerrar el dropdown
     document.getElementById('dropdown_' + uniqueId).style.display = 'none';
-    
+
     // Si es un cambio de categoría, cargar las etiquetas relacionadas
     if (uniqueId.startsWith('category_')) {
         loadTagsForCategory(value);
@@ -144,12 +144,12 @@ function selectOption(uniqueId, value, text) {
 function updateTagsSelection(uniqueId) {
     var checkboxes = document.querySelectorAll('#dropdown_' + uniqueId + ' input[type="checkbox"]:checked');
     var selectedTags = [];
-    
+
     for (var i = 0; i < checkboxes.length; i++) {
         var label = document.querySelector('label[for="' + checkboxes[i].id + '"]');
         selectedTags.push(label.textContent);
     }
-    
+
     // Actualizar el texto del campo de búsqueda
     var searchBox = document.getElementById('searchBox_' + uniqueId);
     if (selectedTags.length > 0) {
@@ -167,7 +167,7 @@ function loadTagsForCategory(categoryId) {
     if (categoryId) {
         var currentUrl = window.location.href;
         var newUrl;
-        
+
         if (currentUrl.indexOf('?') > -1) {
             if (currentUrl.indexOf('category=') > -1) {
                 newUrl = currentUrl.replace(/category=\d+/, 'category=' + categoryId);
@@ -177,7 +177,7 @@ function loadTagsForCategory(categoryId) {
         } else {
             newUrl = currentUrl + '?category=' + categoryId;
         }
-        
+
         window.location.href = newUrl;
     }
 }

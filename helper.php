@@ -27,7 +27,7 @@ class ModAdvancedSearchHelper
         // Asegurarse de que se devuelva un array incluso si no hay resultados
         return $results ? $results : array();
     }
-    
+
     // Obtiene todas las etiquetas
     public static function getTags()
     {
@@ -41,17 +41,17 @@ class ModAdvancedSearchHelper
         $db->setQuery($query);
         return $db->loadObjectList();
     }
-    
+
     // Obtiene las etiquetas asociadas a una categoría específica
     public static function getTagsByCategory($categoryId)
     {
         if (!$categoryId) {
             return self::getTags();
         }
-        
+
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
-        
+
         // Seleccionar etiquetas distintas asociadas a artículos en la categoría
         $query->select('DISTINCT t.id, t.title')
             ->from('#__tags AS t')
@@ -61,16 +61,16 @@ class ModAdvancedSearchHelper
             ->where('t.published = 1')
             ->where('t.title != ' . $db->quote('ROOT'))
             ->order('t.title ASC');
-            
+
         $db->setQuery($query);
         $results = $db->loadObjectList();
-        
+
         // Si no hay resultados, devolver un array vacío
         return $results ? $results : array();
     }
 
     // Obtiene los resultados de la búsqueda basados en los parámetros
-    public static function getResults($params)
+    public static function getResults($params, $parentCategory) // Recibir $parentCategory
     {
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
@@ -79,30 +79,31 @@ class ModAdvancedSearchHelper
             ->join('INNER', '#__categories AS c ON c.id = a.catid')
             ->where('a.state = 1');
 
+        // Obtener las subcategorías de la categoría padre
+        $subcategories = self::getSubcategories($parentCategory);
+
+        // Filtrar por las subcategorías de la categoría padre si se ha configurado una
+        if ($parentCategory > 0 && !empty($subcategories)) {
+            $subcategoryIds = array_column($subcategories, 'id');
+            $query->where('a.catid IN (' . implode(',', $subcategoryIds) . ')');
+        } elseif ($parentCategory > 0 && empty($subcategories)) {
+            // Si se configuró una categoría padre pero no tiene subcategorías, no habrá resultados
+            return array();
+        }
+
         // Filtra por categoría
         $category = $params->get('category');
         if ($category) {
             $query->where('a.catid = ' . $db->quote($category));
         }
 
-
-    // Filtra por etiquetas
-    $tags = $params->get('tags');
-    if ($tags) {
-        $query->join('INNER', '#__contentitem_tag_map AS m ON m.content_item_id = a.id')
-            ->where('m.tag_id IN (' . implode(',', $tags) . ')');
-
-        // Obtener los nombres de las etiquetas seleccionadas
-        $tagNames = array();
-        foreach ($tags as $tagId) {
-            // Usar TagsHelper en lugar de Tag::getInstance
-            $tagsHelper = new TagsHelper();
-            $tagItems = $tagsHelper->getItemTags('com_tags.tag', $tagId);
-            if (!empty($tagItems)) {
-                $tagNames[] = $tagItems[0]->title;
-            }
+        // Filtra por etiquetas
+        $tags = $params->get('tags');
+        if ($tags) {
+            $query->join('INNER', '#__contentitem_tag_map AS m ON m.content_item_id = a.id')
+                ->where('m.tag_id IN (' . implode(',', $tags) . ')');
         }
-    }
+
         // Filtra por rango de fechas
         $startDate = $params->get('start_date');
         $endDate = $params->get('end_date');
@@ -119,39 +120,51 @@ class ModAdvancedSearchHelper
 
         // Añadir los nombres de las etiquetas a los resultados
         $results = $db->loadObjectList();
-        if (isset($tagNames)) {
-            foreach ($results as $result) {
-                $result->tags = implode(', ', $tagNames);
-            }
-        }
 
         return $results;
     }
 
     // Obtiene el total de resultados de la búsqueda basados en los parámetros
-    public static function getTotalResults($params)
+    public static function getTotalResults($params, $parentCategory) // Recibir $parentCategory
     {
         $db = JFactory::getDbo();
+        if ($db === null) {
+            echo '<pre>';
+            debug_print_backtrace();
+            echo '</pre>';
+            die('Error: Could not get database object.');
+        }
         $query = $db->getQuery(true);
         $query->select('COUNT(*)')
             ->from('#__content AS a')
             ->join('INNER', '#__categories AS c ON c.id = a.catid')
             ->where('a.state = 1');
 
-        // Filtra por categoría
+        // Obtener las subcategorías de la categoría padre
+        $subcategories = self::getSubcategories($parentCategory);
+
+        // Filtrar por las subcategorías de la categoría padre si se ha configurado una
+        if ($parentCategory > 0 && !empty($subcategories)) {
+            $subcategoryIds = array_column($subcategories, 'id');
+            $query->where('a.catid IN (' . implode(',', $subcategoryIds) . ')');
+        } elseif ($parentCategory > 0 && empty($subcategories)) {
+            return 0;
+        }
+
+        // Filtrar por categoría
         $category = $params->get('category');
         if ($category) {
             $query->where('a.catid = ' . $db->quote($category));
         }
 
-        // Filtra por etiquetas
+        // Filtrar por etiquetas
         $tags = $params->get('tags');
         if ($tags) {
             $query->join('INNER', '#__contentitem_tag_map AS m ON m.content_item_id = a.id')
                 ->where('m.tag_id IN (' . implode(',', $tags) . ')');
         }
 
-        // Filtra por rango de fechas
+        // Filtrar por rango de fechas
         $startDate = $params->get('start_date');
         $endDate = $params->get('end_date');
         if ($startDate && $endDate) {
