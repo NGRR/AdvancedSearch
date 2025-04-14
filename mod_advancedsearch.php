@@ -5,6 +5,10 @@ defined('_JEXEC') or die;
 // Include helper file
 require_once __DIR__ . '/helper.php';
 
+// Cargar el archivo de idioma
+$lang = JFactory::getLanguage();
+$lang->load('mod_advancedsearch', JPATH_SITE);
+
 // Get module parameters
 $parentCategory = $params->get('parent_category');
 $limit = $params->get('limit', 10);
@@ -26,10 +30,10 @@ $searchParams->set('end_date', $endDate);
 $searchParams->set('limit', $limit);
 
 // Get search results
-$results = ModAdvancedSearchHelper::getResults($searchParams, $parentCategory); // Pasar $parentCategory
+$results = ModAdvancedSearchHelper::getResults($searchParams, $parentCategory);
 
 // Get total results
-$total = ModAdvancedSearchHelper::getTotalResults($searchParams, $parentCategory); // Pasar $parentCategory
+$total = ModAdvancedSearchHelper::getTotalResults($searchParams, $parentCategory);
 
 // Get pagination
 $pagination = ModAdvancedSearchHelper::getPagination($searchParams, $total);
