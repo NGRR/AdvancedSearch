@@ -4,6 +4,7 @@ defined('_JEXEC') or die;
 
 // Importar la clase TagsHelper
 use Joomla\CMS\Helper\TagsHelper;
+use Joomla\Database\ParameterType;
 
 class ModAdvancedSearchHelper
 {
@@ -18,7 +19,7 @@ class ModAdvancedSearchHelper
         $query->select('id, title')
             ->from('#__categories')
             ->where('parent_id = ' . $db->quote($parentCategory))
-            ->where('extension = "com_content"')
+            ->where('extension = ' . $db->quote('com_content'))
             ->order('title ASC');
 
         $db->setQuery($query);
@@ -70,7 +71,7 @@ class ModAdvancedSearchHelper
     }
 
     // Obtiene los resultados de la búsqueda basados en los parámetros
-        public static function getResults($params, $parentCategory)
+    public static function getResults($params, $parentCategory)
     {
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
