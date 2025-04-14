@@ -49,9 +49,14 @@ function createZipPackage($version) {
         'tmpl/helper.php'
     ];
     
+    // Archivos de idioma
+    $languageFiles = [
+        'language/en-GB/en-GB.mod_advancedsearch.ini',
+        'language/es-ES/es-ES.mod_advancedsearch.ini'
+    ];
+    
     // Carpetas
     $folders = [
-        'language',
         'assets'
     ];
     
@@ -71,6 +76,19 @@ function createZipPackage($version) {
     // Añadir archivos de plantillas
     echo "Añadiendo archivos de plantillas...\n";
     foreach ($templateFiles as $file) {
+        if (file_exists($file)) {
+            echo "Añadiendo archivo: {$file}\n";
+            if (!$zip->addFile($file, $file)) {
+                throw new Exception("Error al añadir el archivo: {$file}");
+            }
+        } else {
+            echo "Advertencia: El archivo {$file} no existe\n";
+        }
+    }
+    
+    // Añadir archivos de idioma
+    echo "Añadiendo archivos de idioma...\n";
+    foreach ($languageFiles as $file) {
         if (file_exists($file)) {
             echo "Añadiendo archivo: {$file}\n";
             if (!$zip->addFile($file, $file)) {
