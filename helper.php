@@ -70,11 +70,11 @@ class ModAdvancedSearchHelper
     }
 
     // Obtiene los resultados de la búsqueda basados en los parámetros
-    public static function getResults($params, $parentCategory) // Recibir $parentCategory
+        public static function getResults($params, $parentCategory)
     {
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
-        $query->select('a.id, a.title, c.title AS category, a.publish_up, a.catid, (SELECT GROUP_CONCAT(t.title) FROM #__tags AS t INNER JOIN #__contentitem_tag_map AS m ON t.id = m.tag_id WHERE m.content_item_id = a.id) AS article_tags') // Añadimos la subconsulta para las etiquetas
+        $query->select('a.id, a.title, c.title AS category, a.publish_up, a.catid, (SELECT GROUP_CONCAT(t.title) FROM #__tags AS t INNER JOIN #__contentitem_tag_map AS m ON t.id = m.tag_id WHERE m.content_item_id = a.id) AS article_tags')
             ->from('#__content AS a')
             ->join('INNER', '#__categories AS c ON c.id = a.catid')
             ->where('a.state = 1');
@@ -87,14 +87,17 @@ class ModAdvancedSearchHelper
             $subcategoryIds = array_column($subcategories, 'id');
             $query->where('a.catid IN (' . implode(',', $subcategoryIds) . ')');
         } elseif ($parentCategory > 0 && empty($subcategories)) {
-            // Si se configuró una categoría padre pero no tiene subcategorías, no habrá resultados
             return array();
         }
 
         // Filtra por categoría
-        $category = $params->get('category');
-        if ($category) {
-            $query->where('a.catid = ' . $db->quote($category));
+        $categories = $params->get('category');
+        if (!empty($categories)) {
+            if (is_array($categories)) {
+                $query->where('a.catid IN (' . implode(',', array_map([$db, 'quote'], $categories)) . ')');
+            } else {
+                $query->where('a.catid = ' . $db->quote($categories));
+            }
         }
 
         // Filtra por etiquetas
@@ -116,9 +119,10 @@ class ModAdvancedSearchHelper
         $limitStart = JFactory::getApplication()->input->getInt('limitstart', 0);
         $query->setLimit($limit, $limitStart);
 
-        $db->setQuery($query);
+        // Agrupa por ID de artículo para evitar duplicados por múltiples etiquetas coincidentes
+        $query->group('a.id');
 
-        // Añadir los nombres de las etiquetas a los resultados
+        $db->setQuery($query);
         $results = $db->loadObjectList();
 
         return $results;

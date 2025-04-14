@@ -5,7 +5,7 @@ defined('_JEXEC') or die;
 // Include helper file
 require_once __DIR__ . '/helper.php';
 
-// Get module parameters
+// Get module parameters    asd
 $parentCategory = $params->get('parent_category');
 $limit = $params->get('limit', 10);
 $startDate = $params->get('start_date');
