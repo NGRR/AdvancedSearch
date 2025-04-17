@@ -4,6 +4,11 @@ vendor/
 
 # Ignorar archivos de configuración y credenciales
 configuration.php
+build.sh
+build.php
+Dockerfile
+docker-compose.yml
+.gitignore
 .env
 
 # Ignorar caché y archivos temporales
