@@ -2,30 +2,20 @@
 <extension type="module" version="3.0" client="site" method="upgrade">
     <name>Módulo de búsqueda avanzada</name>
     <author>https://github.com/NGRR</author>
-    <version>1.0.4</version>
-    <description>Test Módulo de búsqueda avanzada de artículos.</description>
+    <version>1.0.1</version>
+    <description>Módulo de búsqueda avanzada de artículos.</description>
     <files>
         <filename module="mod_advancedsearch">mod_advancedsearch.php</filename>
         <filename>helper.php</filename>
         <filename>script.php</filename>
-        <filename>tmpl/default.php</filename>
-        <filename>tmpl/results.php</filename>
-        <filename>tmpl/helper.php</filename>
+        <folder>tmpl</folder>
         <folder>language</folder>
         <folder>assets</folder>
     </files>
-    <languages>
-        <language tag="en-GB">language/en-GB/en-GB.mod_advancedsearch.ini</language>
-        <language tag="es-ES">language/es-ES/es-ES.mod_advancedsearch.ini</language>
-    </languages>
     <config>
         <fields name="params">
             <fieldset name="basic">
                 <field name="parent_category" type="category" label="Categoría Padre" description="Selecciona la categoría padre para mostrar las subcategorías." extension="com_content" />
-                <!-- Modificación para permitir selección múltiple de categorías -->
-                <field name="category" type="categorymultiple" label="Categorías" description="Selecciona las categorías para filtrar los artículos." extension="com_content" multiple="true" />
-                <!-- Fin de la modificación -->
-                <field name="tags" type="tag" label="Etiquetas" description="Selecciona las etiquetas para filtrar los artículos." multiple="true" mode="assoc" />
                 <field name="limit" type="text" label="Límite de resultados" description="Número de resultados por página." default="10" />
             </fieldset>
             <fieldset name="advanced">

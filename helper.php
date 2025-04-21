@@ -4,7 +4,6 @@ defined('_JEXEC') or die;
 
 // Importar la clase TagsHelper
 use Joomla\CMS\Helper\TagsHelper;
-use Joomla\Database\ParameterType;
 
 class ModAdvancedSearchHelper
 {
@@ -19,7 +18,7 @@ class ModAdvancedSearchHelper
         $query->select('id, title')
             ->from('#__categories')
             ->where('parent_id = ' . $db->quote($parentCategory))
-            ->where('extension = ' . $db->quote('com_content'))
+            ->where('extension = "com_content"')
             ->order('title ASC');
 
         $db->setQuery($query);
@@ -71,7 +70,7 @@ class ModAdvancedSearchHelper
     }
 
     // Obtiene los resultados de la búsqueda basados en los parámetros
-    public static function getResults($params, $parentCategory)
+        public static function getResults($params, $parentCategory)
     {
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
@@ -92,10 +91,13 @@ class ModAdvancedSearchHelper
         }
 
         // Filtra por categoría
-        $category = $params->get('category');
-        if (!empty($category)) {
-            $category = is_array($category) ? $category : array($category);
-            $query->where('a.catid IN (' . implode(',', array_map([$db, 'quote'], $category)) . ')');
+        $categories = $params->get('category');
+        if (!empty($categories)) {
+            if (is_array($categories)) {
+                $query->where('a.catid IN (' . implode(',', array_map([$db, 'quote'], $categories)) . ')');
+            } else {
+                $query->where('a.catid = ' . $db->quote($categories));
+            }
         }
 
         // Filtra por etiquetas
@@ -154,10 +156,9 @@ class ModAdvancedSearchHelper
         }
 
         // Filtrar por categoría
-       $category = $params->get('category');
-        if (!empty($category)) {
-            $category = is_array($category) ? $category : array($category);
-            $query->where('a.catid IN (' . implode(',', array_map([$db, 'quote'], $category)) . ')');
+        $category = $params->get('category');
+        if ($category) {
+            $query->where('a.catid = ' . $db->quote($category));
         }
 
         // Filtrar por etiquetas
