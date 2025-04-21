@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" client="site" method="upgrade">
     <name>Módulo de búsqueda avanzada</name>
     <author>https://github.com/NGRR</author>
-    <version>1.0.1</version>
+    <version>1.0.5</version>
     <description>Módulo de búsqueda avanzada de artículos.</description>
     <files>
         <filename module="mod_advancedsearch">mod_advancedsearch.php</filename>
@@ -12,19 +12,53 @@
         <folder>language</folder>
         <folder>assets</folder>
     </files>
+    <languages>
+        <language tag="en-GB">language/en-GB/en-GB.mod_advancedsearch.ini</language>
+        <language tag="es-ES">language/es-ES/es-ES.mod_advancedsearch.ini</language>
+    </languages>
     <config>
         <fields name="params">
             <fieldset name="basic">
-                <field name="parent_category" type="category" label="Categoría Padre" description="Selecciona la categoría padre para mostrar las subcategorías." extension="com_content" />
-                <field name="limit" type="text" label="Límite de resultados" description="Número de resultados por página." default="10" />
-                <field name="theme" type="list" default="default" label="Theme" description="Select the display theme for the search module.">
-                    <option value="default">Default</option>
-                    <option value="custom">Custom Theme</option>
+                <field name="parent_category" 
+                       type="category" 
+                       label="MOD_ADVANCEDSEARCH_CATEGORY" 
+                       description="MOD_ADVANCEDSEARCH_FIELD_PARENT_CATEGORY_DESC" 
+                       extension="com_content" />
+                <field name="category" 
+                       type="categorymultiple" 
+                       label="MOD_ADVANCEDSEARCH_CATEGORY" 
+                       description="MOD_ADVANCEDSEARCH_FIELD_CATEGORY_DESC" 
+                       extension="com_content" 
+                       multiple="true" />
+                <field name="tags" 
+                       type="tag" 
+                       label="MOD_ADVANCEDSEARCH_TAGS" 
+                       description="MOD_ADVANCEDSEARCH_FIELD_TAGS_DESC" 
+                       multiple="true" 
+                       mode="assoc" />
+                <field name="limit" 
+                       type="text" 
+                       label="MOD_ADVANCEDSEARCH_FIELD_LIMIT_LABEL" 
+                       description="MOD_ADVANCEDSEARCH_FIELD_LIMIT_DESC" 
+                       default="10" />
+                <field name="theme" 
+                       type="list" 
+                       default="default" 
+                       label="MOD_ADVANCEDSEARCH_FIELD_THEME_LABEL" 
+                       description="MOD_ADVANCEDSEARCH_FIELD_THEME_DESC">
+                    <option value="default">MOD_ADVANCEDSEARCH_FIELD_THEME_DEFAULT</option>
+                    <option value="custom">MOD_ADVANCEDSEARCH_FIELD_THEME_CUSTOM</option>
                 </field>
             </fieldset>
             <fieldset name="advanced">
-                <field name="start_date" type="calendar" label="Fecha de inicio" description="Fecha de inicio para el rango de fechas." />
-                <field name="end_date" type="calendar" label="Fecha de fin" description="Fecha de fin para el rango de fechas." />
+                <field name="start_date" 
+                       type="calendar" 
+                       label="MOD_ADVANCEDSEARCH_START_DATE" 
+                       description="MOD_ADVANCEDSEARCH_FIELD_START_DATE_DESC" />
+                <field name="end_date" 
+                       type="calendar" 
+                       label="MOD_ADVANCEDSEARCH_END_DATE" 
+                       description="MOD_ADVANCEDSEARCH_FIELD_END_DATE_DESC" />
             </fieldset>
         </fields>
     </config>
