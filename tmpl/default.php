@@ -10,7 +10,7 @@ $limit = $params->get('limit', 10);
 $parentCategory = $params->get('parent_category', 0); // Obtener la categoría padre de los parámetros del módulo
 
 // Get search parameters
-$category = JFactory::getApplication()->input->get('category', null, 'INT');
+$category = JFactory::getApplication()->input->get('category', array(), 'ARRAY');
 $tags = JFactory::getApplication()->input->get('tags', array(), 'ARRAY');
 $startDate = JFactory::getApplication()->input->get('start_date');
 $endDate = JFactory::getApplication()->input->get('end_date');
@@ -34,7 +34,7 @@ $searchPath = ModAdvancedSearchHelper::getSearchPath(new JObject(compact('catego
 $subcategories = ModAdvancedSearchHelper::getSubcategories($parentCategory);
 
 // Get tags - Si hay una categoría seleccionada, obtener las etiquetas de esa categoría
-if ($category) {
+if (!empty($category)) {
     $allTags = ModAdvancedSearchHelper::getTagsByCategory($category);
 } else {
     // Si no hay categoría seleccionada, obtener las etiquetas de todas las subcategorías
@@ -116,27 +116,32 @@ function filterFunction(uniqueId) {
     }
 }
 
-// Función para seleccionar una opción en el dropdown de categorías
 function selectOption(uniqueId, value, text) {
-    // Actualizar el valor del campo de búsqueda
-    document.getElementById('searchBox_' + uniqueId).value = text;
-
-    // Marcar la opción seleccionada
-    var radios = document.getElementsByName('category');
-    for (var i = 0; i < radios.length; i++) {
-        if (radios[i].value === value) {
-            radios[i].checked = true;
-        } else {
-            radios[i].checked = false;
-        }
-    }
-
+    updateCategorySelection(uniqueId);
     // Cerrar el dropdown
     document.getElementById('dropdown_' + uniqueId).style.display = 'none';
+}
 
-    // Si es un cambio de categoría, cargar las etiquetas relacionadas
-    if (uniqueId.startsWith('category_')) {
-        loadTagsForCategory(value);
+
+// Función para actualizar la selección de categorías
+function updateCategorySelection(uniqueId) {
+    var checkboxes = document.querySelectorAll('#dropdown_' + uniqueId + ' input[type="checkbox"]:checked');
+    var selectedCategories = [];
+    var selectedCategoryNames = [];
+
+    for (var i = 0; i < checkboxes.length; i++) {
+        var label = document.querySelector('label[for="' + checkboxes[i].id + '"]');
+        selectedCategories.push(checkboxes[i].value);
+        selectedCategoryNames.push(label.textContent);
+    }
+
+    // Actualizar el texto del campo de búsqueda
+    var searchBox = document.getElementById('searchBox_' + uniqueId);
+    if (selectedCategoryNames.length > 0) {
+        searchBox.value = selectedCategoryNames.join(', ');
+    } else {
+        searchBox.value = '';
+        searchBox.placeholder = 'Seleccionar categorías';
     }
 }
 
@@ -147,7 +152,7 @@ function updateTagsSelection(uniqueId) {
 
     for (var i = 0; i < checkboxes.length; i++) {
         var label = document.querySelector('label[for="' + checkboxes[i].id + '"]');
-        selectedTags.push(label.textContent);
+        selectedTags.push(checkboxes[i].value);
     }
 
     // Actualizar el texto del campo de búsqueda
