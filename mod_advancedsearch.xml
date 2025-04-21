@@ -17,6 +17,10 @@
             <fieldset name="basic">
                 <field name="parent_category" type="category" label="Categoría Padre" description="Selecciona la categoría padre para mostrar las subcategorías." extension="com_content" />
                 <field name="limit" type="text" label="Límite de resultados" description="Número de resultados por página." default="10" />
+                <field name="theme" type="list" default="default" label="Theme" description="Select the display theme for the search module.">
+                    <option value="default">Default</option>
+                    <option value="custom">Custom Theme</option>
+                </field>
             </fieldset>
             <fieldset name="advanced">
                 <field name="start_date" type="calendar" label="Fecha de inicio" description="Fecha de inicio para el rango de fechas." />
