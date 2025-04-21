@@ -15,7 +15,7 @@
     <languages>
         <language tag="en-GB">language/en-GB/en-GB.mod_advancedsearch.ini</language>
         <language tag="es-ES">language/es-ES/es-ES.mod_advancedsearch.ini</language>
-    </languages>
+    </languages>   
     <config>
         <fields name="params">
             <fieldset name="basic">

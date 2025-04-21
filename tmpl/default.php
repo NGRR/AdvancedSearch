@@ -5,6 +5,15 @@ defined('_JEXEC') or die;
 // Include the template helper
 require_once __DIR__ . '/helper.php';
 
+// Add UIkit dependencies
+$document = JFactory::getDocument();
+$document->addStyleSheet('https://cdn.jsdelivr.net/npm/uikit@3.23.6/dist/css/uikit.min.css');
+$document->addScript('https://cdn.jsdelivr.net/npm/uikit@3.23.6/dist/js/uikit.min.js');
+$document->addScript('https://cdn.jsdelivr.net/npm/uikit@3.23.6/dist/js/uikit-icons.min.js');
+
+// Add custom module styles
+$document->addStyleSheet(JUri::root() . 'modules/mod_advancedsearch/assets/css/advancedsearch.css');
+
 // Get module parameters
 $limit = $params->get('limit', 10);
 $parentCategory = $params->get('parent_category', 0); // Obtener la categoría padre de los parámetros del módulo
