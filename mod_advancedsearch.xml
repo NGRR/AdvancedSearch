@@ -3,7 +3,7 @@
     <name>Módulo de búsqueda avanzada</name>
     <author>https://github.com/NGRR</author>
     <version>1.0.3</version>
-    <description>Módulo de búsqueda avanzada de artículos.</description>
+    <description>Test Módulo de búsqueda avanzada de artículos.</description>
     <files>
         <filename module="mod_advancedsearch">mod_advancedsearch.php</filename>
         <filename>helper.php</filename>
