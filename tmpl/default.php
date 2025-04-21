@@ -9,6 +9,7 @@ require_once __DIR__ . '/helper.php';
 $limit = $params->get('limit', 10);
 $parentCategory = $params->get('parent_category', 0); // Obtener la categoría padre de los parámetros del módulo
 
+$theme = $params->get('theme', 'default');
 // Get search parameters
 $category = JFactory::getApplication()->input->get('category', array(), 'ARRAY');
 $tags = JFactory::getApplication()->input->get('tags', array(), 'ARRAY');
@@ -26,6 +27,8 @@ $pagination = ModAdvancedSearchHelper::getPagination(new JObject(compact('limit'
 
 // Get search history
 $searchHistory = ModAdvancedSearchHelper::getSearchHistory();
+
+$wrapperClass = 'mod-advancedsearch theme-' . htmlspecialchars($theme);
 
 // Get search path
 $searchPath = ModAdvancedSearchHelper::getSearchPath(new JObject(compact('category', 'tags', 'startDate', 'endDate')));
@@ -47,8 +50,8 @@ if (!empty($category)) {
             foreach ($allTags as $existingTag) {
                 if ($existingTag->id == $tag->id) {
                     $found = true;
-                    break;
-                }
+                    break;                    
+		}
             }
             if (!$found) {
                 $allTags[] = $tag;
@@ -278,7 +281,7 @@ $document->addStyleDeclaration($dropdownCss);
 $document->addScriptDeclaration($dropdownJs);
 ?>
 
-<form action="<?php echo JRoute::_('index.php?option=com_content&view=articles'); ?>" method="get">
+<form action="<?php echo JRoute::_('index.php?option=com_content&view=articles'); ?>" method="get" class="<?php echo $wrapperClass; ?>">
     <div class="uk-margin">
         <label class="uk-form-label" for="category"><?php echo JText::_('MOD_ADVANCEDSEARCH_CATEGORY'); ?></label>
         <div class="uk-form-controls">
@@ -312,14 +315,20 @@ $document->addScriptDeclaration($dropdownJs);
     </div>
 </form>
 
-<?php if ($total > 0): ?>
-    <p><?php echo JText::sprintf('MOD_ADVANCEDSEARCH_RESULTS_FOUND', $total, $searchPath); ?></p>
-
-    <?php echo ModAdvancedSearchTemplateHelper::getResultsTable($results); ?>
-
-    <?php echo ModAdvancedSearchTemplateHelper::getPaginationHtml($pagination); ?>
+<?php if ($total > 0) : ?>
+    <div class="<?php echo $wrapperClass; ?>-results">
+        <p><?php echo JText::sprintf('MOD_ADVANCEDSEARCH_RESULTS_FOUND', $total, $searchPath); ?></p>
+        <?php echo ModAdvancedSearchTemplateHelper::getResultsTable($results); ?>
+        <?php echo ModAdvancedSearchTemplateHelper::getPaginationHtml($pagination); ?>
+    </div>
+<?php elseif (JFactory::getApplication()->input->get('start_date') || JFactory::getApplication()->input->get('category') || JFactory::getApplication()->input->get('tags')): ?>
+    <div class="<?php echo $wrapperClass; ?>-no-results">
+        <p><?php echo JText::_('MOD_ADVANCEDSEARCH_NO_RESULTS_FOUND'); ?></p>
+    </div>
 <?php endif; ?>
 
-<?php if (!empty($searchHistory)): ?>
-    <?php echo ModAdvancedSearchTemplateHelper::getSearchHistoryHtml($searchHistory); ?>
+<?php if (!empty($searchHistory)) : ?>
+    <div class="<?php echo $wrapperClass; ?>-history">
+        <?php echo ModAdvancedSearchTemplateHelper::getSearchHistoryHtml($searchHistory); ?>
+    </div>
 <?php endif; ?>

@@ -27,6 +27,10 @@
                 <!-- Fin de la modificación -->
                 <field name="tags" type="tag" label="Etiquetas" description="Selecciona las etiquetas para filtrar los artículos." multiple="true" mode="assoc" />
                 <field name="limit" type="text" label="Límite de resultados" description="Número de resultados por página." default="10" />
+                <field name="theme" type="list" default="default" label="Theme" description="Select the display theme for the search module.">
+                    <option value="default">Default</option>
+                    <option value="custom">Custom Theme</option>
+                </field>
             </fieldset>
             <fieldset name="advanced">
                 <field name="start_date" type="calendar" label="Fecha de inicio" description="Fecha de inicio para el rango de fechas." />
