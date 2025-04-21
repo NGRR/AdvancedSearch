@@ -14,7 +14,7 @@ class Mod_advancedsearchInstallerScript
     {
         // Puedes agregar aquí cualquier tarea que necesites realizar durante la instalación.
         // Por ejemplo, crear tablas de base de datos, copiar archivos, etc.
-        echo '<p>' . JText::_('MOD_ADVANCEDSEARCH_INSTALL_SUCCESS') . '</p>';
+        echo '<p>' . \Joomla\CMS\Language\Text::_('MOD_ADVANCEDSEARCH_INSTALL_SUCCESS') . '</p>';
     }
 
     /**
@@ -27,7 +27,7 @@ class Mod_advancedsearchInstallerScript
     {
         // Puedes agregar aquí cualquier tarea que necesites realizar durante la desinstalación.
         // Por ejemplo, eliminar tablas de base de datos, eliminar archivos, etc.
-        echo '<p>' . JText::_('MOD_ADVANCEDSEARCH_UNINSTALL_SUCCESS') . '</p>';
+        echo '<p>' . \Joomla\CMS\Language\Text::_('MOD_ADVANCEDSEARCH_UNINSTALL_SUCCESS') . '</p>';
     }
 
     /**
@@ -40,7 +40,7 @@ class Mod_advancedsearchInstallerScript
     {
         // Puedes agregar aquí cualquier tarea que necesites realizar durante la actualización.
         // Por ejemplo, migrar datos, actualizar tablas de base de datos, etc.
-        echo '<p>' . JText::_('MOD_ADVANCEDSEARCH_UPDATE_SUCCESS') . '</p>';
+        echo '<p>' . \Joomla\CMS\Language\Text::_('MOD_ADVANCEDSEARCH_UPDATE_SUCCESS') . '</p>';
     }
 
     /**
