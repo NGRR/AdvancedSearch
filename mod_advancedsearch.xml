@@ -11,11 +11,7 @@
         <folder>tmpl</folder>
         <folder>language</folder>
         <folder>assets</folder>
-    </files>
-    <languages>
-        <language tag="en-GB">language/en-GB/en-GB.mod_advancedsearch.ini</language>
-        <language tag="es-ES">language/es-ES/es-ES.mod_advancedsearch.ini</language>
-    </languages>   
+    </files>  
     <config>
         <fields name="params">
             <fieldset name="basic">
