@@ -2,8 +2,8 @@
 <extension type="module" version="3.0" client="site" method="upgrade">
     <name>Módulo de búsqueda avanzada</name>
     <author>https://github.com/NGRR</author>
-    <version>1.0.3</version>
-    <description>Test Módulo de búsqueda avanzada de artículos.</description>
+    <version>1.0.4</version>
+    <description>Módulo de búsqueda avanzada de artículos.</description>
     <files>
         <filename module="mod_advancedsearch">mod_advancedsearch.php</filename>
         <filename>helper.php</filename>
@@ -14,10 +14,6 @@
         <folder>language</folder>
         <folder>assets</folder>
     </files>
-    <languages>
-        <language tag="en-GB">language/en-GB/en-GB.mod_advancedsearch.ini</language>
-        <language tag="es-ES">language/es-ES/es-ES.mod_advancedsearch.ini</language>
-    </languages>
     <config>
         <fields name="params">
             <fieldset name="basic">
