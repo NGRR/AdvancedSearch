@@ -1,8 +1,8 @@
 node_modules/
 vendor/
 .idea/
-..idx/
-..vscode/
+.idx/
+.vscode/
 
 # Ignorar archivos de configuración y credenciales
 configuration.php
