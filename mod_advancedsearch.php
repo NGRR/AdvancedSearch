@@ -2,6 +2,10 @@
 // No direct access
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Helper\ModuleHelper;
+
 // Include helper file
 require_once __DIR__ . '/helper.php';
 
@@ -18,9 +22,9 @@ $subcategories = ModAdvancedSearchHelper::getSubcategories($parentCategory);
 $tags = ModAdvancedSearchHelper::getTags();
 
 // Prepare search parameters
-$searchParams = new JObject();
-$searchParams->set('category', JFactory::getApplication()->input->get('category', null, 'INT'));
-$searchParams->set('tags', JFactory::getApplication()->input->get('tags', array(), 'ARRAY'));
+$searchParams = new CMSObject();
+$searchParams->set('category', Factory::getApplication()->input->get('category', null, 'INT'));
+$searchParams->set('tags', Factory::getApplication()->input->get('tags', array(), 'ARRAY'));
 $searchParams->set('start_date', $startDate);
 $searchParams->set('end_date', $endDate);
 $searchParams->set('limit', $limit);
@@ -44,4 +48,4 @@ ModAdvancedSearchHelper::addSearchToHistory($searchParams);
 $searchPath = ModAdvancedSearchHelper::getSearchPath($searchParams);
 
 // Include the template file
-require JModuleHelper::getLayoutPath('mod_advancedsearch', $params->get('layout', 'default'));
+require ModuleHelper::getLayoutPath('mod_advancedsearch', $params->get('layout', 'default'));

@@ -2,17 +2,23 @@
 // No direct access
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Router\Route;
+use Joomla\Registry\Registry;
+
 // Include the template helper
 require_once __DIR__ . '/helper.php';
 
 // Add UIkit dependencies
-$document = JFactory::getDocument();
+$document = Factory::getDocument();
 $document->addStyleSheet('https://cdn.jsdelivr.net/npm/uikit@3.23.6/dist/css/uikit.min.css');
 $document->addScript('https://cdn.jsdelivr.net/npm/uikit@3.23.6/dist/js/uikit.min.js');
 $document->addScript('https://cdn.jsdelivr.net/npm/uikit@3.23.6/dist/js/uikit-icons.min.js');
 
 // Add custom module styles
-$document->addStyleSheet(JUri::root() . 'modules/mod_advancedsearch/assets/css/advancedsearch.css');
+$document->addStyleSheet(Uri::root() . 'modules/mod_advancedsearch/assets/css/advancedsearch.css');
 
 // Get module parameters
 $limit = $params->get('limit', 10);
@@ -20,19 +26,19 @@ $parentCategory = $params->get('parent_category', 0); // Obtener la categoría p
 
 $theme = $params->get('theme', 'default');
 // Get search parameters
-$category = JFactory::getApplication()->input->get('category', null, 'INT');
-$tags = JFactory::getApplication()->input->get('tags', array(), 'ARRAY');
-$startDate = JFactory::getApplication()->input->get('start_date');
-$endDate = JFactory::getApplication()->input->get('end_date');
+$category = Factory::getApplication()->input->get('category', null, 'INT');
+$tags = Factory::getApplication()->input->get('tags', array(), 'ARRAY');
+$startDate = Factory::getApplication()->input->get('start_date');
+$endDate = Factory::getApplication()->input->get('end_date');
 
 // Get search results
-$results = ModAdvancedSearchHelper::getResults(new JObject(compact('category', 'tags', 'startDate', 'endDate', 'limit')), $parentCategory); // Pasar $parentCategory
+$results = ModAdvancedSearchHelper::getResults(new Registry(compact('category', 'tags', 'startDate', 'endDate', 'limit')), $parentCategory); // Pasar $parentCategory
 
 // Get total results
-$total = ModAdvancedSearchHelper::getTotalResults(new JObject(compact('category', 'tags', 'startDate', 'endDate')), $parentCategory); // Pasar $parentCategory
+$total = ModAdvancedSearchHelper::getTotalResults(new Registry(compact('category', 'tags', 'startDate', 'endDate')), $parentCategory); // Pasar $parentCategory
 
 // Get pagination
-$pagination = ModAdvancedSearchHelper::getPagination(new JObject(compact('limit')), $total);
+$pagination = ModAdvancedSearchHelper::getPagination(new Registry(compact('limit')), $total);
 
 // Get search history
 $searchHistory = ModAdvancedSearchHelper::getSearchHistory();
@@ -40,7 +46,7 @@ $searchHistory = ModAdvancedSearchHelper::getSearchHistory();
 $wrapperClass = 'mod-advancedsearch theme-' . htmlspecialchars($theme);
 
 // Get search path
-$searchPath = ModAdvancedSearchHelper::getSearchPath(new JObject(compact('category', 'tags', 'startDate', 'endDate')));
+$searchPath = ModAdvancedSearchHelper::getSearchPath(new Registry(compact('category', 'tags', 'startDate', 'endDate')));
 
 // Get subcategories - Usar la categoría padre configurada en los parámetros del módulo
 $subcategories = ModAdvancedSearchHelper::getSubcategories($parentCategory);
@@ -74,10 +80,10 @@ if ($category) {
 }
 
 // Cargar los archivos CSS y JavaScript necesarios
-$document = JFactory::getDocument();
+$document = Factory::getDocument();
 $moduleRelativePath = 'modules/mod_advancedsearch';
-$document->addStyleSheet(JUri::base() . $moduleRelativePath . '/assets/css/dropdown.css');
-$document->addScript(JUri::base() . $moduleRelativePath . '/assets/js/dropdown.js');
+$document->addStyleSheet(Uri::base() . $moduleRelativePath . '/assets/css/dropdown.css');
+$document->addScript(Uri::base() . $moduleRelativePath . '/assets/js/dropdown.js');
 
 // Incluir el código JavaScript directamente en la página para evitar problemas de carga
 $dropdownJs = <<<EOD
@@ -285,49 +291,49 @@ $document->addStyleDeclaration($dropdownCss);
 $document->addScriptDeclaration($dropdownJs);
 ?>
 
-<form action="<?php echo JRoute::_('index.php?option=com_content&view=articles'); ?>" method="get" class="<?php echo $wrapperClass; ?>">
+<form action="<?php echo Route::_('index.php?option=com_content&view=articles'); ?>" method="get" class="<?php echo $wrapperClass; ?>">
     <div class="uk-margin">
-        <label class="uk-form-label" for="category"><?php echo JText::_('MOD_ADVANCEDSEARCH_CATEGORY'); ?></label>
+        <label class="uk-form-label" for="category"><?php echo Text::_('MOD_ADVANCEDSEARCH_CATEGORY'); ?></label>
         <div class="uk-form-controls">
             <?php echo ModAdvancedSearchTemplateHelper::getSubcategoriesDropdown($subcategories, $category); ?>
         </div>
     </div>
 
     <div class="uk-margin">
-        <label class="uk-form-label" for="tags"><?php echo JText::_('MOD_ADVANCEDSEARCH_TAGS'); ?></label>
+        <label class="uk-form-label" for="tags"><?php echo Text::_('MOD_ADVANCEDSEARCH_TAGS'); ?></label>
         <div class="uk-form-controls">
             <?php echo ModAdvancedSearchTemplateHelper::getTagsDropdown($allTags, $tags); ?>
         </div>
     </div>
 
     <div class="uk-margin">
-        <label class="uk-form-label" for="start_date"><?php echo JText::_('MOD_ADVANCEDSEARCH_START_DATE'); ?></label>
+        <label class="uk-form-label" for="start_date"><?php echo Text::_('MOD_ADVANCEDSEARCH_START_DATE'); ?></label>
         <div class="uk-form-controls">
             <input type="date" name="start_date" id="start_date" class="uk-input" value="<?php echo $startDate; ?>">
         </div>
     </div>
 
     <div class="uk-margin">
-        <label class="uk-form-label" for="end_date"><?php echo JText::_('MOD_ADVANCEDSEARCH_END_DATE'); ?></label>
+        <label class="uk-form-label" for="end_date"><?php echo Text::_('MOD_ADVANCEDSEARCH_END_DATE'); ?></label>
         <div class="uk-form-controls">
             <input type="date" name="end_date" id="end_date" class="uk-input" value="<?php echo $endDate; ?>">
         </div>
     </div>
 
     <div class="uk-margin">
-        <button type="submit" class="uk-button uk-button-primary"><?php echo JText::_('MOD_ADVANCEDSEARCH_SEARCH'); ?></button>
+        <button type="submit" class="uk-button uk-button-primary"><?php echo Text::_('MOD_ADVANCEDSEARCH_SEARCH'); ?></button>
     </div>
 </form>
 
 <?php if ($total > 0) : ?>
     <div class="<?php echo $wrapperClass; ?>-results">
-        <p><?php echo JText::sprintf('MOD_ADVANCEDSEARCH_RESULTS_FOUND', $total, $searchPath); ?></p>
+        <p><?php echo Text::sprintf('MOD_ADVANCEDSEARCH_RESULTS_FOUND', $total, $searchPath); ?></p>
         <?php echo ModAdvancedSearchTemplateHelper::getResultsTable($results); ?>
         <?php echo ModAdvancedSearchTemplateHelper::getPaginationHtml($pagination); ?>
     </div>
-<?php elseif (JFactory::getApplication()->input->get('start_date') || JFactory::getApplication()->input->get('category') || JFactory::getApplication()->input->get('tags')): ?>
+<?php elseif (Factory::getApplication()->input->get('start_date') || Factory::getApplication()->input->get('category') || Factory::getApplication()->input->get('tags')): ?>
     <div class="<?php echo $wrapperClass; ?>-no-results">
-        <p><?php echo JText::_('MOD_ADVANCEDSEARCH_NO_RESULTS_FOUND'); ?></p>
+        <p><?php echo Text::_('MOD_ADVANCEDSEARCH_NO_RESULTS_FOUND'); ?></p>
     </div>
 <?php endif; ?>
 
