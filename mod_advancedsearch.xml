@@ -18,6 +18,10 @@
         <fields name="params">
             <fieldset name="basic">
                 <field name="parent_category" type="category" label="Categoría Padre" description="Selecciona la categoría padre para mostrar las subcategorías." extension="com_content" />
+                <!-- Modificación para permitir selección múltiple de categorías -->
+                <field name="category" type="categorymultiple" label="Categorías" description="Selecciona las categorías para filtrar los artículos." extension="com_content" multiple="true" />
+                <!-- Fin de la modificación -->
+                <field name="tags" type="tag" label="Etiquetas" description="Selecciona las etiquetas para filtrar los artículos." multiple="true" mode="assoc" />
                 <field name="limit" type="text" label="Límite de resultados" description="Número de resultados por página." default="10" />
             </fieldset>
             <fieldset name="advanced">

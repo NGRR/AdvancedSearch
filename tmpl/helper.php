@@ -21,38 +21,17 @@ class ModAdvancedSearchTemplateHelper
         $html .= '<div class="dropdown-content" id="dropdown_' . $uniqueId . '">';
         $html .= '<input type="text" class="uk-input filter-input" id="filterInput_' . $uniqueId . '" onkeyup="filterFunction(\'' . $uniqueId . '\')" placeholder="' . JText::_('MOD_ADVANCEDSEARCH_SEARCH') . '">';
         
-        // Opción para todas las subcategorías
-        $html .= '<div class="dropdown-item" onclick="selectOption(\'' . $uniqueId . '\', \'\', \'' . JText::_('MOD_ADVANCEDSEARCH_ALL_SUBCATEGORIES') . '\')">';
-        $html .= '<input type="radio" name="category" id="category_option_all" value="" ' . (empty($selected) ? 'checked' : '') . '>';
-        $html .= '<label for="category_option_all">' . JText::_('MOD_ADVANCEDSEARCH_ALL_SUBCATEGORIES') . '</label>';
-        $html .= '</div>';
-        
         // Opciones para cada subcategoría
         foreach ($subcategories as $subcategory) {
-            $html .= '<div class="dropdown-item" onclick="selectOption(\'' . $uniqueId . '\', \'' . $subcategory->id . '\', \'' . htmlspecialchars($subcategory->title, ENT_QUOTES) . '\')">';
-            $html .= '<input type="radio" name="category" id="category_option_' . $subcategory->id . '" value="' . $subcategory->id . '" ' . ($subcategory->id == $selected ? 'checked' : '') . '>';
-            $html .= '<label for="category_option_' . $subcategory->id . '">' . $subcategory->title . '</label>';
+            $isSelected = in_array($subcategory->id, $selected);
+            $html .= '<div class="dropdown-item"  onclick="event.stopPropagation();">';
+            $html .= '<input type="checkbox" name="category[]" id="category_' . $subcategory->id . '" value="' . $subcategory->id . '" ' . ($isSelected ? 'checked' : '') . '>';
+            $html .= '<label for="category_' . $subcategory->id . '">' . $subcategory->title . '</label>';
             $html .= '</div>';
         }
         
-        $html .= '</div>'; // Fin dropdown-content
-        $html .= '</div>'; // Fin dropdown-container
-        $html .= '</div>'; // Fin custom-dropdown
-        
-        // Inicializar el valor seleccionado
-        $selectedText = JText::_('MOD_ADVANCEDSEARCH_ALL_SUBCATEGORIES');
-        if (!empty($selected)) {
-            foreach ($subcategories as $subcategory) {
-                if ($subcategory->id == $selected) {
-                    $selectedText = $subcategory->title;
-                    break;
-                }
-            }
-        }
-        
-        $html .= '<script>document.getElementById("searchBox_' . $uniqueId . '").value = "' . htmlspecialchars($selectedText, ENT_QUOTES) . '";</script>';
-        
-        return $html;
+        $html .= '</div></div></div>';
+                return $html;
     }
 
     /**

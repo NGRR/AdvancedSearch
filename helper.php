@@ -92,13 +92,10 @@ class ModAdvancedSearchHelper
         }
 
         // Filtra por categoría
-        $categories = $params->get('category');
-        if (!empty($categories)) {
-            if (is_array($categories)) {
-                $query->where('a.catid IN (' . implode(',', array_map([$db, 'quote'], $categories)) . ')');
-            } else {
-                $query->where('a.catid = ' . $db->quote($categories));
-            }
+        $category = $params->get('category');
+        if (!empty($category)) {
+            $category = is_array($category) ? $category : array($category);
+            $query->where('a.catid IN (' . implode(',', array_map([$db, 'quote'], $category)) . ')');
         }
 
         // Filtra por etiquetas
@@ -157,9 +154,10 @@ class ModAdvancedSearchHelper
         }
 
         // Filtrar por categoría
-        $category = $params->get('category');
-        if ($category) {
-            $query->where('a.catid = ' . $db->quote($category));
+       $category = $params->get('category');
+        if (!empty($category)) {
+            $category = is_array($category) ? $category : array($category);
+            $query->where('a.catid IN (' . implode(',', array_map([$db, 'quote'], $category)) . ')');
         }
 
         // Filtrar por etiquetas
